@@ -51,7 +51,7 @@ public class ProductControllerImpl implements ProductController {
     public ResponseEntity<List<ProductResponse>> getProductsByCategory(Long categoryId) {
         var products = productService.getProductsByCategoryId(categoryId);
         if (products.isEmpty()){
-            log.warn(WriteLog.logWarning("Product not found for category ID: " + categoryId));
+            log.warn(WriteLog.logWarning("Products not found for category ID: " + categoryId));
             return ResponseEntity.noContent().build();
         }
 
