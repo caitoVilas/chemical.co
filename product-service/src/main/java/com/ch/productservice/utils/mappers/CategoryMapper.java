@@ -37,4 +37,11 @@ public class CategoryMapper {
                 .name(category.getName())
                 .build();
     }
+
+    public static Category mapToEntity(CategoryResponse response) {
+        return Category.builder()
+                .id(response.getId())
+                .name(response.getName())
+                .build();
+    }
 }

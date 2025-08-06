@@ -20,9 +20,9 @@ import org.springframework.http.HttpHeaders;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Chemical.co / Product Service",
+                title = "Chemical.co / Product & Category Services",
                 version = "1.0.0",
-                description = "Chemical.co Product Service API Documentation",
+                description = "Chemical.co Product & Category Service API Documentation",
                 contact = @Contact(name = "caito Vilas", email = "caitocd@gmail.com")
         )
 )

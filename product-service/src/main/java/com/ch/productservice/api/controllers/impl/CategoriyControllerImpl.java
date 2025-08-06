@@ -1,11 +1,13 @@
 package com.ch.productservice.api.controllers.impl;
 
+import com.ch.core.chcore.logs.WriteLog;
 import com.ch.productservice.api.controllers.contracts.CategoryController;
 import com.ch.productservice.api.models.requests.CategoryRequest;
 import com.ch.productservice.api.models.responses.CategoryResponse;
 import com.ch.productservice.services.contracts.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,7 @@ import java.util.List;
 @RequestMapping("/v1/ctegories")
 @RequiredArgsConstructor
 @Tag(name = "Category API", description = "Operations related to product categories")
+@Slf4j
 public class CategoriyControllerImpl implements CategoryController {
     private final CategoryService categoryService;
 
@@ -38,8 +41,10 @@ public class CategoriyControllerImpl implements CategoryController {
     @Override
     public ResponseEntity<List<CategoryResponse>> getCategories() {
         List<CategoryResponse> categories = categoryService.findAll();
-        if (categories.isEmpty())
+        if (categories.isEmpty()) {
+            log.warn(WriteLog.logWarning("No categories found"));
             return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(categories);
     }
 
