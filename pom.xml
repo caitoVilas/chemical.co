@@ -10,5 +10,6 @@
 
     <modules>
         <module>ch-core</module>
+        <module>product-service</module>
     </modules>
 </project>

@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: /chco/api
+  port: 10200
+spring:
+  application:
+      name:  product-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/chemical_co
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
