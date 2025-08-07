@@ -1,6 +1,7 @@
 package com.ch.userservice.services.impl;
 
 import com.ch.core.chcore.enums.RoleName;
+import com.ch.core.chcore.events.HighMsg;
 import com.ch.core.chcore.exceptions.BadRequestException;
 import com.ch.core.chcore.exceptions.NotFoundException;
 import com.ch.core.chcore.helpers.ValidationHelper;
@@ -14,6 +15,8 @@ import com.ch.userservice.services.contracts.UserService;
 import com.ch.userservice.utils.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * UserServiceImpl class implements the UserService interface.
@@ -38,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private  final PasswordEncoder passwordEncoder;
+    private final KafkaTemplate<String, HighMsg> kafkaTemplate;
 
     /**
      * Creates a new user based on the provided UserRequest.
@@ -71,6 +76,32 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRoles(roles);
         userRepository.save(user);
+        log.info(WriteLog.logInfo("--> send message to broker"));
+       /* try {
+            kafkaTemplate.send("highTopic",
+                    HighMsg.builder()
+                            .email(user.getEmail())
+                            .username(user.getName())
+                            .build());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }*/
+        CompletableFuture<SendResult<String, HighMsg>> future = kafkaTemplate.send(
+                "highTopic",
+                HighMsg.builder()
+                        .email(user.getEmail())
+                        .username(user.getName())
+                        .build()
+        );
+        future.whenCompleteAsync((r,t) ->{
+            if (t != null) {
+                log.error(WriteLog.logError("--> Error sending message to broker: " + t.getMessage()));
+                throw new RuntimeException("Error sending message to broker", t);
+            } else {
+                log.info(WriteLog.logInfo("--> Message sent to broker successfully"));
+            }
+        });
+
     }
 
     /**
