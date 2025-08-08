@@ -2,6 +2,7 @@ package com.ch.userservice.api.controllers.impl;
 
 import com.ch.core.chcore.logs.WriteLog;
 import com.ch.userservice.api.controllers.contracts.UserController;
+import com.ch.userservice.api.models.requests.EnableUser;
 import com.ch.userservice.api.models.requests.UserRequest;
 import com.ch.userservice.api.models.responses.UserResponse;
 import com.ch.userservice.services.contracts.UserService;
@@ -49,5 +50,11 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<UserResponse> getUserById(Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @Override
+    public ResponseEntity<?> enableUser(EnableUser request) {
+        userService.enableUser(request);
+        return ResponseEntity.ok().build();
     }
 }

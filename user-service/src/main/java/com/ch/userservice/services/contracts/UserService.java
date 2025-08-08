@@ -1,5 +1,6 @@
 package com.ch.userservice.services.contracts;
 
+import com.ch.userservice.api.models.requests.EnableUser;
 import com.ch.userservice.api.models.requests.UserRequest;
 import com.ch.userservice.api.models.responses.UserResponse;
 
@@ -18,4 +19,5 @@ public interface UserService {
     void createUser(UserRequest request);
     List<UserResponse> getAllUsers();
     UserResponse getUserById(Long id);
+    void enableUser(EnableUser request);
 }
