@@ -21,7 +21,5 @@ import java.io.Serializable;
 public class UserRequest implements Serializable {
     private String name;
     private String email;
-    private String password;
     private String phone;
-    private RoleName role;
 }

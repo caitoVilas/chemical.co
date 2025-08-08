@@ -19,4 +19,5 @@ import java.io.Serializable;
 public class HighMsg implements Serializable {
     private String email;
     private String username;
+    private String validationToken;
 }
