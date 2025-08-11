@@ -189,6 +189,33 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * Sets the role of a user to admin based on their email.
+     * Updates the user's roles and saves the changes.
+     *
+     * @param email the email of the user to set as admin
+     * @return the UserResponse DTO of the updated user
+     * @throws NotFoundException if the user or roles are not found
+     */
+    @Override
+    public UserResponse setAdmin(String email) {
+        log.info(WriteLog.logInfo("--> set role admin to user " + email));
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() ->{
+                    log.error(WriteLog.logError("--> User not found with email " + email));
+                    return new BadRequestException(List.of("User not found with email " + email));
+                });
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByRole(RoleName.ROLE_USER)
+                .orElseThrow(() -> new NotFoundException("User role not found"));
+        roles.add(userRole);
+        Role adminRole = roleRepository.findByRole(RoleName.ROLE_ADMIN)
+                .orElseThrow(() -> new NotFoundException("Admin Role mot found"));
+        roles.add(adminRole);
+        user.setRoles(roles);
+        return UserMapper.mapToDto(userRepository.save(user));
+    }
+
+    /**
      * Validates the user details from the UserRequest.
      * Checks for required fields and formats, and throws BadRequestException if validation fails.
      *

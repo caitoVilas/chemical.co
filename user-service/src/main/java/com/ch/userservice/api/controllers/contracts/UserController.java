@@ -65,4 +65,15 @@ public interface UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<?> enableUser(@RequestBody EnableUser request);
+
+    @PutMapping("/enable-admin/{email}")
+    @Operation(description = "Enable role admin to a user by email")
+    @Parameter(name = "email", description = "email of the user to be enabled as admin")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "user enabled successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<UserResponse> setAdmin(@PathVariable String email);
 }
