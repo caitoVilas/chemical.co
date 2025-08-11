@@ -9,6 +9,7 @@ import com.ch.userservice.services.contracts.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<?> createUser(UserRequest request) {
         userService.createUser(request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
@@ -56,5 +57,10 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<?> enableUser(EnableUser request) {
         userService.enableUser(request);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<UserResponse> setAdmin(String email) {
+        return ResponseEntity.ok(userService.setAdmin(email));
     }
 }

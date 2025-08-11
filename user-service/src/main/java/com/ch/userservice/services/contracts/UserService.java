@@ -20,4 +20,5 @@ public interface UserService {
     List<UserResponse> getAllUsers();
     UserResponse getUserById(Long id);
     void enableUser(EnableUser request);
+    UserResponse setAdmin(String email);
 }
