@@ -1,4 +1,4 @@
-package com.ch.userservice.api.models.responses;
+package com.ch.core.chcore.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -26,9 +26,9 @@ public class UserAuthResponse implements Serializable {
     private String email;
     private String password;
     private String phone;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime updatedAt;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
     private Set<RoleResponse> role;
 }

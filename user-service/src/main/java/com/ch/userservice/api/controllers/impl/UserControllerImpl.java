@@ -1,6 +1,7 @@
 package com.ch.userservice.api.controllers.impl;
 
 import com.ch.core.chcore.logs.WriteLog;
+import com.ch.core.chcore.models.UserAuthResponse;
 import com.ch.userservice.api.controllers.contracts.UserController;
 import com.ch.userservice.api.models.requests.EnableUser;
 import com.ch.userservice.api.models.requests.UserRequest;
@@ -63,4 +64,11 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<UserResponse> setAdmin(String email) {
         return ResponseEntity.ok(userService.setAdmin(email));
     }
+
+    @Override
+    public ResponseEntity<UserAuthResponse> getAllDataUser(String email) {
+        return ResponseEntity.ok(userService.getAllDataUser(email));
+    }
+
+
 }

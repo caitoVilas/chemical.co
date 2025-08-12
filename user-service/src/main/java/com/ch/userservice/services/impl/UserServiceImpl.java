@@ -6,6 +6,8 @@ import com.ch.core.chcore.exceptions.BadRequestException;
 import com.ch.core.chcore.exceptions.NotFoundException;
 import com.ch.core.chcore.helpers.ValidationHelper;
 import com.ch.core.chcore.logs.WriteLog;
+import com.ch.core.chcore.models.LoginRequest;
+import com.ch.core.chcore.models.UserAuthResponse;
 import com.ch.userservice.api.models.requests.EnableUser;
 import com.ch.userservice.api.models.requests.UserRequest;
 import com.ch.userservice.api.models.responses.UserResponse;
@@ -15,6 +17,7 @@ import com.ch.userservice.persistence.repositories.RoleRepository;
 import com.ch.userservice.persistence.repositories.UserRepository;
 import com.ch.userservice.persistence.repositories.ValidationTokenRepository;
 import com.ch.userservice.services.contracts.UserService;
+import com.ch.userservice.utils.mappers.RoleMapper;
 import com.ch.userservice.utils.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * UserServiceImpl class implements the UserService interface.
@@ -45,6 +49,7 @@ public class UserServiceImpl implements UserService {
     private  final PasswordEncoder passwordEncoder;
     private final KafkaTemplate<String, HighMsg> kafkaTemplate;
     private final KafkaTemplate<String, String> kafkaStringTemplate;
+    private final KafkaTemplate<String, UserAuthResponse> kafkaUserTemplate;
     private final ValidationTokenRepository validationTokenRepository;
 
     /**
@@ -213,6 +218,41 @@ public class UserServiceImpl implements UserService {
         roles.add(adminRole);
         user.setRoles(roles);
         return UserMapper.mapToDto(userRepository.save(user));
+    }
+
+    /**
+     * Retrieves all data of a user based on their email.
+     * Maps the UserApp entity to a UserAuthResponse DTO.
+     *
+     * @param email the email of the user to retrieve
+     * @return the UserAuthResponse DTO containing all user data
+     * @throws NotFoundException if the user with the given email does not exist
+     */
+    @Override
+
+    public UserAuthResponse getAllDataUser(String email) {
+        log.info(WriteLog.logInfo("--> Retrieving all data user service email: " + email));
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error(WriteLog.logError("--> User not found with email: " + email));
+                    return new NotFoundException("User not found with email: " + email);
+                });
+
+        return UserAuthResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .phone(user.getPhone())
+                .accountNonExpired(user.isAccountNonExpired())
+                .accountNonLocked(user.isAccountNonLocked())
+                .credentialsNonExpired(user.isCredentialsNonExpired())
+                .enabled(user.isEnabled())
+                .role(user.getRoles().stream()
+                        .map(RoleMapper::mapToCore)
+                .collect(Collectors.toSet()))
+                .build();
+
     }
 
     /**

@@ -36,4 +36,11 @@ public class RoleMapper {
                 .role(role.getRole())
                 .build();
     }
+
+    public static com.ch.core.chcore.models.RoleResponse mapToCore(Role role) {
+        return com.ch.core.chcore.models.RoleResponse.builder()
+                .role(role.getRole())
+                .build();
+    }
+
 }
