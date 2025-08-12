@@ -1,5 +1,7 @@
 package com.ch.userservice.services.contracts;
 
+import com.ch.core.chcore.models.LoginRequest;
+import com.ch.core.chcore.models.UserAuthResponse;
 import com.ch.userservice.api.models.requests.EnableUser;
 import com.ch.userservice.api.models.requests.UserRequest;
 import com.ch.userservice.api.models.responses.UserResponse;
@@ -21,4 +23,5 @@ public interface UserService {
     UserResponse getUserById(Long id);
     void enableUser(EnableUser request);
     UserResponse setAdmin(String email);
+    UserAuthResponse getAllDataUser(String email);
 }

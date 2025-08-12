@@ -1,5 +1,6 @@
 package com.ch.userservice.api.controllers.contracts;
 
+import com.ch.core.chcore.models.UserAuthResponse;
 import com.ch.userservice.api.models.requests.EnableUser;
 import com.ch.userservice.api.models.requests.UserRequest;
 import com.ch.userservice.api.models.responses.UserResponse;
@@ -76,4 +77,15 @@ public interface UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<UserResponse> setAdmin(@PathVariable String email);
+
+    @GetMapping("/full-data/{email}")
+    @Operation(description = "Retrieve all data of users")
+    @Parameter(name = "email", description = "user email to be retrieved")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "users retrieved successfully"),
+            @ApiResponse(responseCode = "204", description = "No content, no categories found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<UserAuthResponse> getAllDataUser(@PathVariable String email);
+
 }
