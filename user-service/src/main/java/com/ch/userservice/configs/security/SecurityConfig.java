@@ -1,5 +1,8 @@
 package com.ch.userservice.configs.security;
 
+import com.ch.userservice.configs.security.filters.JwtEntryPoint;
+import com.ch.userservice.configs.security.filters.JwtTokenFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * SecurityConfig class configures the security settings for the application.
@@ -18,7 +22,10 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtEntryPoint jwtEntryPoint;
+    private final JwtTokenFilter jwtTokenFilter;
 
     /**
      * Configures the security filter chain for the application.
@@ -34,10 +41,19 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth ->
                         auth
-                              .anyRequest().permitAll())
+                                .requestMatchers("/swagger-ui/**",
+                                                 "/v3/api-docs/**",
+                                                 "/v1/users/create").permitAll()
+                                .requestMatchers("/v1/users/enable-user/**").permitAll()
+                                .requestMatchers("/v1/users/full-data/**").permitAll()
+                                .requestMatchers("/v1/users/enable-admin/**").hasRole("ADMIN")
+                                .requestMatchers("/v1/users/remove/**").hasRole("ADMIN")
+                              .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtEntryPoint))
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

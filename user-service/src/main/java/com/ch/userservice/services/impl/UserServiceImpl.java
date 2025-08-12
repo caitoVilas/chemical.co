@@ -256,6 +256,24 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * Deletes a user by their ID.
+     * Throws NotFoundException if the user with the given ID does not exist.
+     *
+     * @param id the ID of the user to delete
+     * @throws NotFoundException if the user with the given ID does not exist
+     */
+    @Override
+    public void deleteUser(Long id) {
+        log.info(WriteLog.logInfo("--> Deleting user service ID: " + id));
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error(WriteLog.logError("--> User not found with ID: " + id));
+                    return new NotFoundException("User not found with ID: " + id);
+                });
+        userRepository.delete(user);
+    }
+
+    /**
      * Validates the user details from the UserRequest.
      * Checks for required fields and formats, and throws BadRequestException if validation fails.
      *

@@ -24,4 +24,5 @@ public interface UserService {
     void enableUser(EnableUser request);
     UserResponse setAdmin(String email);
     UserAuthResponse getAllDataUser(String email);
+    void deleteUser(Long id);
 }
