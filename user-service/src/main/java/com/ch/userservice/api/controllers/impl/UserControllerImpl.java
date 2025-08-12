@@ -70,5 +70,11 @@ public class UserControllerImpl implements UserController {
         return ResponseEntity.ok(userService.getAllDataUser(email));
     }
 
+    @Override
+    public ResponseEntity<?> removeUser(Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

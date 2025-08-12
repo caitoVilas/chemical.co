@@ -68,6 +68,7 @@ public interface UserController {
     public ResponseEntity<?> enableUser(@RequestBody EnableUser request);
 
     @PutMapping("/enable-admin/{email}")
+    @SecurityRequirement(name = "security token")
     @Operation(description = "Enable role admin to a user by email")
     @Parameter(name = "email", description = "email of the user to be enabled as admin")
     @ApiResponses({
@@ -79,7 +80,7 @@ public interface UserController {
     public ResponseEntity<UserResponse> setAdmin(@PathVariable String email);
 
     @GetMapping("/full-data/{email}")
-    @Operation(description = "Retrieve all data of users")
+    @Operation(hidden = true)
     @Parameter(name = "email", description = "user email to be retrieved")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "users retrieved successfully"),
@@ -88,4 +89,15 @@ public interface UserController {
     })
     public ResponseEntity<UserAuthResponse> getAllDataUser(@PathVariable String email);
 
+    @DeleteMapping("/remove/{id}")
+    @SecurityRequirement(name = "security token")
+    @Operation(description = "Remove a user by id")
+    @Parameter(name = "id", description = "user id to be removed")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "user removed successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<?> removeUser(@PathVariable Long id);
 }
